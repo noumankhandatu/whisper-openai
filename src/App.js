@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import Navbar from "./components/navbar";
 import OpenAiImage from "./assets/openAI.png";
-import "./App.css";
 import { Box } from "@mui/system";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { AudioRecorder } from "react-audio-voice-recorder";
 import { audioCss, boxLayout } from "./components/navbar/style";
+import "./App.css";
+
+// real time speech
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 // static data
 const textColor = "white";
 const textOne = "Whisper Demo";
 const textTwo =
   " Audio transcription and translation demo based on OpenAI Whisper. Record speech from your device to transcribe and translate it (remember to press stop recording when done!).";
-
 function App() {
   // audio rec start
   const [audioUrl, setAudioUrl] = useState(null);
-  const [transcript, setTranscript] = useState(null);
+  const [WhisperTranscript, setWhisperTranscript] = useState(null);
 
   const addAudioElement = async (blob) => {
     const url = URL.createObjectURL(blob);
@@ -36,23 +40,33 @@ function App() {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_KEY}`,
           },
           body: formData,
         }
       );
       const text = await response.text();
-      setTranscript(text);
+      setWhisperTranscript(text);
     } catch (error) {
       console.error(error);
     }
   };
   // audio rec end
 
+  // real time speech start
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
+  const StartRealTimeListening = () => {
+    SpeechRecognition.startListening({ continuous: true });
+  };
+
   // clear button
   const handleClear = () => {
     setAudioUrl(null);
-    setTranscript(null);
+    setWhisperTranscript(null);
+    // real time
+    SpeechRecognition.stopListening();
+    resetTranscript();
   };
 
   return (
@@ -98,15 +112,18 @@ function App() {
                 Clear
               </Button>
             ) : (
-              <AudioRecorder onRecordingComplete={addAudioElement} />
+              <div onClick={StartRealTimeListening}>
+                <AudioRecorder onRecordingComplete={addAudioElement} />
+              </div>
             )}
           </Box>
         </Box>
         <Box sx={audioCss}>
-          {audioUrl ? (
-            <p>
-              {transcript ? transcript : <CircularProgress color="success" />}
-            </p>
+          {/* <div>
+            <p>{!audioUrl && transcript}</p>
+          </div> */}
+          {audioUrl || transcript ? (
+            <p>{WhisperTranscript ? WhisperTranscript : transcript}</p>
           ) : (
             `I can write your words 😊 `
           )}
