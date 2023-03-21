@@ -18,3 +18,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.audio-recorder-options {
+  display: none !important;
+}
+
+.audio-recorder-timer,
+.audio-recorder-status {
+  color: black;
+}

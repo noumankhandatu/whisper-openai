@@ -5,7 +5,6 @@ import { Box } from "@mui/system";
 import { Button, Typography } from "@mui/material";
 import { AudioRecorder } from "react-audio-voice-recorder";
 import { audioCss, boxLayout } from "./components/navbar/style";
-import "./App.css";
 
 // real time speech
 import SpeechRecognition, {
@@ -134,25 +133,3 @@ function App() {
 }
 
 export default App;
-// const RecordAudioButton = () => {
-//   const [recording, setRecording] = useState(false);
-
-//   const handleClick = () => {
-//     setRecording(!recording);
-//   };
-
-//   return (
-//     <Button size="small" variant="contained" onClick={handleClick}>
-//       {recording ? (
-//         <div className="beeping-animation beeping"></div>
-//       ) : (
-//         <div className="stop-beeping-animation"></div>
-//       )}
-//       <p style={{ color: "transparent" }}>..</p>
-
-//       <p style={{ marginTop: "2px" }}>
-//         {recording ? "Stop Recording" : "Start Recording"}
-//       </p>
-//     </Button>
-//   );
-// };
